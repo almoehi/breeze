@@ -253,7 +253,7 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
   def horzcat[V: ClassTag:DefaultArrayValue](vectors: DenseVector[V]*): DenseMatrix[V] = {
     val size = vectors.head.size
     if (!(vectors forall (_.size == size)))
-      throw new IllegalArgumentException(s"All vectors must have the same size! Sizes are ${_.size} and ${size}")
+      throw new IllegalArgumentException(s"All vectors must have the same size! Sizes should be all ${size}")
     val result = DenseMatrix.zeros[V](size, vectors.size)
     for ((v, col) <- vectors.zipWithIndex)
       result(::, col) := v
@@ -434,8 +434,8 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
 
         val r = re.getRangeWithoutNegativeIndexes( v.length )
 
-        require(r.isEmpty || r.last < v.length, s"DenseVector slice range ($r) must be empty or Range.last (${r.last}) must be smaller than v.length(${v.length}).")
-        require(r.isEmpty || r.start >= 0, s"DenseVector slice range ($r) must be empty or Range.start (${r.start}) must be >=0.")
+        require(r.isEmpty || r.last < v.length, s"DenseVector slice range must be empty or Range.last (${r.last}) must be smaller than v.length(${v.length}).")
+        require(r.isEmpty || r.start >= 0, s"DenseVector slice range must be empty or Range.start (${r.start}) must be >=0.")
         new DenseVector(v.data, offset = v.offset + v.stride * r.start, stride = v.stride * r.step, length = r.length)
       }
     }
