@@ -253,7 +253,7 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
   def horzcat[V: ClassTag:DefaultArrayValue](vectors: DenseVector[V]*): DenseMatrix[V] = {
     val size = vectors.head.size
     if (!(vectors forall (_.size == size)))
-      throw new IllegalArgumentException("All vectors must have the same size!")
+      throw new IllegalArgumentException(s"All vectors must have the same size! Sizes are ${_.size} and ${size}")
     val result = DenseMatrix.zeros[V](size, vectors.size)
     for ((v, col) <- vectors.zipWithIndex)
       result(::, col) := v
@@ -352,7 +352,7 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
       /** Iterates all key-value pairs from the given collection. */
       def traverse(from1: DenseVector[V], from2: DenseVector[W], fn: PairValuesVisitor[V,W]): Unit = {
         if (from1.size != from2.size) {
-          throw new IllegalArgumentException("Vectors to be zipped must have same size")
+          throw new IllegalArgumentException(s"Vectors to be zipped must have same size. Sizes are ${from1.size} and ${from2.size}")
         }
         cfor(0)(i => i < from1.size, i => i+1)(i => {
           fn.visit(from1.unsafeValueAt(i), from2.unsafeValueAt(i))
@@ -434,8 +434,8 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
 
         val r = re.getRangeWithoutNegativeIndexes( v.length )
 
-        require(r.isEmpty || r.last < v.length)
-        require(r.isEmpty || r.start >= 0)
+        require(r.isEmpty || r.last < v.length, s"DenseVector slice range ($r) must be empty or Range.last (${r.last}) must be smaller than v.length(${v.length}).")
+        require(r.isEmpty || r.start >= 0, s"DenseVector slice range ($r) must be empty or Range.start (${r.start}) must be >=0.")
         new DenseVector(v.data, offset = v.offset + v.stride * r.start, stride = v.stride * r.step, length = r.length)
       }
     }
@@ -480,7 +480,7 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
 
     /**Maps all corresponding values from the two collection. */
     def map(from: DenseVector[V], from2: DenseVector[V], fn: (V, V) => RV): DenseVector[RV] = {
-      require(from.length == from2.length, "Vector lengths must match!")
+      require(from.length == from2.length, s"Vector lengths must match! Lengths are ${from.length} and ${from2.length}")
       val result = create(from.length)
       var i = 0
       while (i < from.length) {
@@ -500,7 +500,7 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
   implicit val canAddIntoD: OpAdd.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] = {
     new OpAdd.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] {
       def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
-        require(a.length == b.length, "Vectors must have same length")
+        require(a.length == b.length, s"Vectors must have same length when adding in place. Lengths are ${a.length} and ${b.length}")
         blas.daxpy(
           a.length, 1.0, b.data, b.offset, b.stride, a.data, a.offset, a.stride)
       }
@@ -510,7 +510,7 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
 
   implicit object canDaxpy extends scaleAdd.InPlaceImpl3[DenseVector[Double], Double, DenseVector[Double]] with Serializable {
     def apply(y: DenseVector[Double], a: Double, x: DenseVector[Double]) {
-      require(x.length == y.length, "Vectors must have same length")
+      require(x.length == y.length, s"Vectors must have same length for blas.daxpy.  Lengths are ${x.length} and ${y.length}")
       blas.daxpy(
         x.length, a, x.data, x.offset, x.stride, y.data, y.offset, y.stride)
     }
@@ -525,7 +525,7 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
   implicit val canSubIntoD: OpSub.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] = {
     new OpSub.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] {
       def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
-        require(a.length == b.length, "Vectors must have same length")
+        require(a.length == b.length, s"Vectors must have same length when subtracting in place.  Lengths are ${a.length} and ${b.length}")
         blas.daxpy(
           a.length, -1.0, b.data, b.offset, b.stride, a.data, a.offset, a.stride)
       }
@@ -541,7 +541,7 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
   implicit val canDotD: OpMulInner.Impl2[DenseVector[Double], DenseVector[Double], Double] = {
     new OpMulInner.Impl2[DenseVector[Double], DenseVector[Double], Double] {
       def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
-        require(a.length == b.length, "Vectors must have same length")
+        require(a.length == b.length, s"Vectors must have same length when multiplying in place. Lengths are ${a.length} and ${b.length}")
         blas.ddot(
           a.length, b.data, b.offset, b.stride, a.data, a.offset, a.stride)
       }
@@ -567,7 +567,7 @@ object DenseVector extends VectorConstructors[DenseVector] with DenseVector_Gene
 
   implicit val canSetD: OpSet.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] = new OpSet.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] {
     def apply(a: DenseVector[Double], b: DenseVector[Double]) {
-      require(a.length == b.length, "Vector lengths must match!")
+      require(a.length == b.length, s"Vector lengths must match! Lengths are ${a.length} and ${b.length}")
       blas.dcopy(
         a.length, b.data, b.offset, b.stride, a.data, a.offset, a.stride)
     }
