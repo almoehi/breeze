@@ -46,41 +46,30 @@ object OptWindowFunction {
 }
 
 
-/**Option values: how to deal with convolution overhangs.*/
+/**Options: how to deal with filter/convolution overhangs.*/
 abstract class OptOverhang extends Opt
 object OptOverhang{
-//  /** THIS OPTION REMOVED FOR NOW, DUE TO AMBIGUITY WITH KERNEL DIRECTION (IE CONVOLVE VS CORRELATE)
-//   * Option value: Forms the cyclic convolution whose first element contains data(0)*kernel(k0),
-//    * and the last element contains data(-1)*kernel(k1).
-//    *
-//    * Common settings are:
-//    * {-1, 1}: no overhangs (Default)
-//    * {-1, -1}: maximal overhang at right hand end
-//    * {1, 1}: maximal overhang at left hand end
-//    * {1, -1}: maximal overhangs at both ends.
-//    */
-//  case class Sequence(k0: Int, k1: Int) extends OptOverhang
-  /**Option value: Default, no overhangs, equivalent to Sequence(-1, 1).*/
+  /**Default, no overhangs.*/
   case object None extends OptOverhang
-  /**Option value: maximal overhangs, equivalent to MatLab conv default ('full'), equivalent to Sequence(1, -1).*/
+  /**Maximal overhangs, equivalent to MatLab conv default ('full').*/
   case object Full extends OptOverhang
-  /**Option value: maximal overhangs, equivalent to MatLab conv default ('full'), equivalent to Sequence(1, -1).*/
+  /**Preserve length: pads both size with a fixed value (e.g. 0) to provide
+    * filter results which are the same length as filter input data.*/
   case object PreserveLength extends OptOverhang
-//  /**Option value: Forms the cyclic convolution where the kth kernel element is aligned with each data element.*/
-//  case class OptInteger(k: Int) extends OptOverhang
+  /**Cyclical padding, also preserves length.*/
+  case object Cyclical extends OptOverhang
 }
 
-/**Option values: how to deal with convolution and filter padding.*/
+/**Options: how to deal with filter/convolution padding, only valid for
+  * OptOverhang.Full and OptOverhang.PreserveLength.*/
 abstract class OptPadding extends Opt
 object OptPadding{
-  /**Option value: Performs cyclical convolutions (ie no padding)*/
-  case object Cyclical extends OptPadding
-  /**Option value: Pads with the first and last components of the data*/
-  case object Boundary extends OptPadding
-  /**Option value: Pads with a specific value, eg 0.*/
-  case class ValueOpt[T](value: T) extends OptPadding
   /**Option value: Pads with 0.*/
   case object Zero extends OptPadding
+  /**Pads with a specific value, eg 0.*/
+  case class ValueOpt[T](value: T) extends OptPadding
+  /**Pads with boundary values: the first and last components of the data.*/
+  case object Boundary extends OptPadding
 }
 
 /**Option values: how to deal with convolution and filter padding.*/
