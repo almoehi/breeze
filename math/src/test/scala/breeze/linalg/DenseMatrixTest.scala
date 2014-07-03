@@ -173,6 +173,9 @@ class DenseMatrixTest extends FunSuite with Checkers with ShouldMatchers with Do
 
     val b2 : DenseMatrix[Double] = a.mapValues(_ + 1.0)
     assert(b2 === DenseMatrix((2.0,1.0,1.0),(3.0,4.0,0.0)))
+
+    val b3 = a.t.mapValues(_ + 1)
+    assert(b3 === DenseMatrix((2,3), (1,4), (1,0)))
   }
 
   /*
@@ -591,6 +594,12 @@ class DenseMatrixTest extends FunSuite with Checkers with ShouldMatchers with Do
     val dm = DenseMatrix(List(List(1, 2, 3, 0, 0, 0, 0, 0, 0), List(0, 0, 0, 1, 2, 3, 0, 0, 0), List(0, 0, 0, 0, 0, 0, 1, 2, 3)):_*)
   }
 
+
+  test("#265: slices of :: and IndexedSeq") {
+    val dm = DenseMatrix( (0, 1, 2), (3, 4, 5))
+    assert(dm(::, IndexedSeq(2,1, 0)).toDenseMatrix === fliplr(dm))
+    assert(dm(IndexedSeq(1, 0), ::).toDenseMatrix === flipud(dm))
+  }
 
 
 
