@@ -6,11 +6,12 @@ import breeze.signal._
 
 object FilterFirWin {
 
-  def design[Input](order: OptOrder, omega: OptOmega, window: OptWindowFunction, tpe: OptFilterTpe, samplingRate: Double = 2d): FIRKernel1D[Input] = {
-    ???
-  }
-  
-  def design[Input](taps: Int, omega: OptOmega, samplingRate: Double = 2d,
+  def apply(order: OptOrder, omega: OptOmega, samplingRate: Double = 2d,
+            zeroPass: Boolean = true,
+            scale: Boolean = true, multiplier: Double = 1d,
+            optWindow: OptWindowFunction = OptWindowFunction.Hamming())(data: DenseVector[Double]): DenseVector[Double] = ???
+
+  def design[Input](order: OptOrder, omega: OptOmega, samplingRate: Double = 2d,
                 zeroPass: Boolean = true,
                 scale: Boolean = true, multiplier: Double = 1d,
                 optWindow: OptWindowFunction = OptWindowFunction.Hamming()  )
