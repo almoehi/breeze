@@ -1,7 +1,6 @@
 package breeze.signal
 
 import breeze.signal.support.IIRKernel1D
-import breeze.signal.{OptFilterTpe, OptOmega, OptOrder}
 
 object FilterButterworth {
   
