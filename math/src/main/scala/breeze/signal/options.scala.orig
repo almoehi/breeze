@@ -31,17 +31,28 @@ import breeze.util.Opt
 
 ///Individual Options
 
-  // <editor-fold defaultstate="collapsed" desc=" convolution options ">
-
 /**Option values: how to deal with convolution overhangs.*/
 abstract class OptOverhang extends Opt
 object OptOverhang{
+//  /** THIS OPTION REMOVED FOR NOW, DUE TO AMBIGUITY WITH KERNEL DIRECTION (IE CONVOLVE VS CORRELATE)
+//   * Option value: Forms the cyclic convolution whose first element contains data(0)*kernel(k0),
+//    * and the last element contains data(-1)*kernel(k1).
+//    *
+//    * Common settings are:
+//    * {-1, 1}: no overhangs (Default)
+//    * {-1, -1}: maximal overhang at right hand end
+//    * {1, 1}: maximal overhang at left hand end
+//    * {1, -1}: maximal overhangs at both ends.
+//    */
+//  case class Sequence(k0: Int, k1: Int) extends OptOverhang
   /**Option value: Default, no overhangs, equivalent to Sequence(-1, 1).*/
   case object None extends OptOverhang
   /**Option value: maximal overhangs, equivalent to MatLab conv default ('full'), equivalent to Sequence(1, -1).*/
   case object Full extends OptOverhang
   /**Option value: maximal overhangs, equivalent to MatLab conv default ('full'), equivalent to Sequence(1, -1).*/
   case object PreserveLength extends OptOverhang
+//  /**Option value: Forms the cyclic convolution where the kth kernel element is aligned with each data element.*/
+//  case class OptInteger(k: Int) extends OptOverhang
 }
 
 /**Option values: how to deal with convolution and filter padding.*/
@@ -82,10 +93,6 @@ object OptConvolveMethod{
   /**Option value: Convolve using for loop.*/
 }
 
-  // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc=" filter design options ">
-
 @deprecated("filter design functions are distributed to different objects, eg FilterButterworth", "0.11")
 abstract class OptDesignMethod extends Opt
 @deprecated("filter design functions are distributed to different objects, eg FilterButterworth", "0.11")
@@ -123,14 +130,25 @@ object OptWindowFunction {
   }
 }
 
-// filter type options of IIR/ SOS filter designs
+<<<<<<< HEAD
+// filter flavour options of IIR/ SOS filter designs
 abstract class OptFilterTpe extends Opt
 
-object OptFilterTpe{
+object OptFilterTpe {
   case object LowPass extends OptFilterTpe
   case object HighPass extends OptFilterTpe
   case object BandPass extends OptFilterTpe
   case object BandStop extends OptFilterTpe
+=======
+// filter type options of IIR/ SOS filter designs
+abstract class OptFilterType extends Opt
+
+object OptFilterType{
+  case object LowPass extends OptFilterType
+  case object HighPass extends OptFilterType
+  case object BandPass extends OptFilterType
+  case object BandStop extends OptFilterType
+>>>>>>> 03bc0c9206418fab1d577c5a50f0d6b2a4edee28
 }
 
 // filter order options
@@ -144,5 +162,7 @@ object OptOrder {
 // filter cutoff freq options
 abstract class OptOmega extends Opt
 
-  // </editor-fold>
-
+object OptOmega {
+  case class DoubleValue(omega: Double) extends OptOmega
+  case class TupleValue(omega1: Double, omega2: Double) extends OptOmega
+}
