@@ -117,10 +117,10 @@ package object signal {
     * @param canFilter  (implicit delegate to perform filtering on specific Input data types)
     * @return
     */
-  def filter[Input, Kernel, Output](data: Input, kernel: Kernel,
+  def filter[Input, Kernel, Output](
+                            data: Input, kernel: Kernel,
                             overhang: OptOverhang = OptOverhang.PreserveLength,
-                            padding: OptPadding = OptPadding.Zero)
-        (implicit canFilter: CanFilter[Input, Kernel, Output]): Output =
+                            padding: OptPadding = OptPadding.Zero)( implicit canFilter: CanFilter[Input, Kernel, Output] ): Output =
     canFilter(data, kernel, overhang, padding)
 
   // </editor-fold>

@@ -1,6 +1,5 @@
 package breeze.signal
 
-import breeze.signal._
 import breeze.signal.support._
 import breeze.linalg.DenseVector
 import breeze.numerics.isEven
@@ -22,19 +21,4 @@ package object filter {
 //  def designFiltButterworth[Input](order: OptOrder, omega: OptOmega, tpe: OptFilterTpe) = FilterButterworth.design[Input](order, omega, tpe)
   
   
-  // <editor-fold desc="filter">
-  /** Filter input data with the specified kernel and options.
-    *
-    * @param data data to be filtered
-    * @param kernel filter kernel
-    * @param overhang  whether to have overhanging values - defaults to no overhang. See [[breeze.signal.OptOverhang]]
-    * @param padding  how to pad the values - defaults to no padding. See [[breeze.signal.OptPadding]]
-    * @param canFilter  (implicit delegate to perform filtering on specific Input data types)
-    * @return
-    */
-  def filter[Input, Kernel, Output](data: Input, kernel: Kernel,
-                            overhang: OptOverhang = OptOverhang.PreserveLength,
-                            padding: OptPadding = OptPadding.Zero)
-        (implicit canFilter: CanFilter[Input, Kernel, Output]): Output = canFilter(data, kernel, overhang, padding)
-  // </editor-fold>
 }
