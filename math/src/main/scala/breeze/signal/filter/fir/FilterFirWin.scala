@@ -1,4 +1,4 @@
-package breeze.signal.filter.fir
+package breeze.signal
 
 import breeze.linalg.DenseVector
 import breeze.signal.support.{CanFirwin, FIRKernel1D}
@@ -14,10 +14,12 @@ object FilterFirWin {
                 zeroPass: Boolean = true,
                 scale: Boolean = true, multiplier: Double = 1d,
                 optWindow: OptWindowFunction = OptWindowFunction.Hamming()  )
-               (implicit canFirwin: CanFirwin[Input]): FIRKernel1D[Input] = omega match {
+               (implicit canFirwin: CanFirwin[Input]): FIRKernel1D[Input] = ???
 
-                  case o: OptOmega.DoubleValue => canFirwin(taps, DenseVector(o.omega), samplingRate, zeroPass, scale, multiplier, optWindow)
-                  case o: OptOmega.TupleValue => canFirwin(taps, DenseVector(o.omega1, o.omega2), samplingRate, zeroPass, scale, multiplier, optWindow)
-  }
+//    omega match {
+//
+//                  case o: OptOmega.DoubleValue => canFirwin(taps, DenseVector(o.omega), samplingRate, zeroPass, scale, multiplier, optWindow)
+//                  case o: OptOmega.TupleValue => canFirwin(taps, DenseVector(o.omega1, o.omega2), samplingRate, zeroPass, scale, multiplier, optWindow)
+//  }
    
 }

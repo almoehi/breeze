@@ -1,4 +1,4 @@
-package breeze.signal.filter.fir
+package breeze.signal
 
 import breeze.signal.OptOrder
 import breeze.signal.support.FIRKernel1D
